@@ -1,0 +1,473 @@
+Perfect 👍 now we’ll upgrade your tree search into a **proper interview / industry-level React component**:
+
+You’ll get:
+
+✅ Expand / Collapse tree nodes
+✅ Highlight matched search text
+✅ Auto suggest search
+✅ Clean component logic
+✅ Real **code-level testing strategy** (unit + behavior testing)
+
+I’ll keep it structured so you can implement step-by-step.
+
+---
+
+# ✅ PART 1 — Expand / Collapse Tree Nodes
+
+## 📄 Update `TreeView.js`
+
+```javascript
+import { useState } from "react";
+
+function highlight(text, query) {
+ if (!query) return text;
+
+ const parts = text.split(new RegExp(`(${query})`, "gi"));
+
+ return parts.map((p, i) =>
+   p.toLowerCase() === query.toLowerCase()
+     ? <span key={i} style={{fontWeight:"bold"}}>{p}</span>
+     : p
+ );
+}
+
+function TreeView({ data, query }) {
+
+ return (
+   <ul>
+     {data.map(node => (
+       <TreeNode key={node.id} node={node} query={query}/>
+     ))}
+   </ul>
+ );
+}
+
+function TreeNode({ node, query }) {
+
+ const [open, setOpen] = useState(false);
+
+ return (
+   <li>
+     {node.children && (
+       <button onClick={() => setOpen(!open)}>
+         {open ? "-" : "+"}
+       </button>
+     )}
+
+     {highlight(node.name, query)}
+
+     {open && node.children && (
+       <TreeView data={node.children} query={query}/>
+     )}
+   </li>
+ );
+}
+
+export default TreeView;
+```
+
+---
+
+# ✅ PART 2 — Update App Logic
+
+📄 `App.js`
+
+```javascript
+const [query, setQuery] = useState("");
+const [filtered, setFiltered] = useState(treeData);
+
+<SearchBar
+ data={treeData}
+ onSearch={(q)=>{
+   setQuery(q);
+   setFiltered(q ? filterTree(treeData,q):treeData);
+ }}
+/>
+
+<TreeView data={filtered} query={query}/>
+```
+
+---
+
+# ✅ PART 3 — Code Level Testing Strategy (VERY IMPORTANT 🔥)
+
+In real companies we test:
+
+| What                 | Type               |
+| -------------------- | ------------------ |
+| Search input         | Unit test          |
+| Suggestion rendering | UI test            |
+| Expand collapse      | Interaction test   |
+| Highlight logic      | Pure function test |
+| Tree filtering       | Logic test         |
+
+---
+
+# ✅ PART 4 — Test Expand Collapse
+
+📄 `TreeView.test.js`
+
+```javascript
+import { render, screen, fireEvent } from "@testing-library/react";
+import TreeView from "./TreeView";
+
+test("expand collapse node", () => {
+
+ const data=[{
+   id:1,
+   name:"Fruits",
+   children:[{id:2,name:"Apple"}]
+ }];
+
+ render(<TreeView data={data} query=""/>);
+
+ const button=screen.getByText("+");
+
+ fireEvent.click(button);
+
+ expect(screen.getByText("Apple")).toBeInTheDocument();
+});
+```
+
+---
+
+# ✅ PART 5 — Test Highlight Function
+
+Move highlight into utility file:
+
+📄 `utils/highlight.js`
+
+```javascript
+export function highlightText(text, query){
+ if(!query) return [text];
+
+ return text.split(new RegExp(`(${query})`,"gi"));
+}
+```
+
+Test:
+
+```javascript
+import { highlightText } from "./highlight";
+
+test("highlight splits text", ()=>{
+ const result=highlightText("Apple","App");
+ expect(result.length).toBeGreaterThan(1);
+});
+```
+
+---
+
+# ✅ PART 6 — Test Auto Suggest
+
+```javascript
+test("shows suggestions", ()=>{
+ render(<SearchBar data={[{name:"Apple"}]} onSearch={()=>{}}/>);
+
+ fireEvent.change(
+   screen.getByPlaceholderText("Search..."),
+   {target:{value:"App"}}
+ );
+
+ expect(screen.getByText("Apple")).toBeInTheDocument();
+});
+```
+
+---
+
+# 🧠 REAL INDUSTRY TESTING RULES
+
+Developers usually test:
+
+👉 Pure functions separately
+👉 UI interactions using testing-library
+👉 Avoid testing internal state
+👉 Test behavior not implementation
+
+---
+
+# 🚀 REAL INTERVIEW UPGRADE (highly recommended for you)
+
+Since you're doing:
+
+Spring Boot + React + Full Stack
+
+Next level features recruiters LOVE:
+
+🔥 Keyboard navigation search
+🔥 Debounce search input
+🔥 Lazy loading tree from backend
+🔥 Highlight with background color
+🔥 Virtualized large tree (performance)
+🔥 Jest + Cypress E2E testing
+
+---
+
+If you want… I can give you a **FAANG-level Machine Coding Round Version** of this tree search 😄
+(the one used in Amazon / Walmart / PhonePe interviews)
+
+Just say:
+
+👉 **"Give me machine coding round version"** 🚀
+
+
+
+
+
+Nice 👍 this is actually a **very real industry UI feature** — search bar + tree nodes + auto-suggest + test cases.
+I’ll give you a **clear step-by-step mini project** so you can run it locally.
+
+We’ll build:
+
+👉 React Search Bar
+👉 Tree Structure (like folders/categories)
+👉 Auto Suggest Dropdown
+👉 Filter Tree Based on Search
+👉 Basic Test Cases (Jest + React Testing Library)
+
+---
+
+# ✅ STEP 1 — Create React Project
+
+Open terminal:
+
+```bash
+npx create-react-app tree-search-app
+cd tree-search-app
+npm start
+```
+
+---
+
+# ✅ STEP 2 — Project Structure
+
+Inside `src` create:
+
+```
+components/
+   SearchBar.js
+   TreeView.js
+data/
+   treeData.js
+```
+
+---
+
+# ✅ STEP 3 — Create Tree Data
+
+📄 `src/data/treeData.js`
+
+```javascript
+const treeData = [
+  {
+    id: 1,
+    name: "Fruits",
+    children: [
+      { id: 2, name: "Apple" },
+      { id: 3, name: "Banana" }
+    ]
+  },
+  {
+    id: 4,
+    name: "Vegetables",
+    children: [
+      { id: 5, name: "Carrot" },
+      { id: 6, name: "Potato" }
+    ]
+  }
+];
+
+export default treeData;
+```
+
+---
+
+# ✅ STEP 4 — Search Bar with Auto Suggest
+
+📄 `SearchBar.js`
+
+```javascript
+import { useState } from "react";
+
+function SearchBar({ data, onSearch }) {
+
+ const [query, setQuery] = useState("");
+
+ const flattenData = (nodes) => {
+   let result = [];
+   nodes.forEach(n => {
+     result.push(n.name);
+     if (n.children) {
+       result = result.concat(flattenData(n.children));
+     }
+   });
+   return result;
+ };
+
+ const suggestions = flattenData(data).filter(item =>
+   item.toLowerCase().includes(query.toLowerCase())
+ );
+
+ return (
+   <div>
+     <input
+       placeholder="Search..."
+       value={query}
+       onChange={(e) => {
+         setQuery(e.target.value);
+         onSearch(e.target.value);
+       }}
+     />
+
+     {query && (
+       <ul>
+         {suggestions.map((s, i) => (
+           <li key={i}>{s}</li>
+         ))}
+       </ul>
+     )}
+   </div>
+ );
+}
+
+export default SearchBar;
+```
+
+---
+
+# ✅ STEP 5 — Tree View Component
+
+📄 `TreeView.js`
+
+```javascript
+function TreeView({ data }) {
+
+ return (
+   <ul>
+     {data.map(node => (
+       <li key={node.id}>
+         {node.name}
+         {node.children && <TreeView data={node.children} />}
+       </li>
+     ))}
+   </ul>
+ );
+}
+
+export default TreeView;
+```
+
+---
+
+# ✅ STEP 6 — Main App Logic
+
+📄 `App.js`
+
+```javascript
+import { useState } from "react";
+import treeData from "./data/treeData";
+import SearchBar from "./components/SearchBar";
+import TreeView from "./components/TreeView";
+
+function App() {
+
+ const [filtered, setFiltered] = useState(treeData);
+
+ const filterTree = (nodes, query) => {
+   return nodes
+     .map(node => {
+       if (node.name.toLowerCase().includes(query.toLowerCase())) {
+         return node;
+       }
+       if (node.children) {
+         const children = filterTree(node.children, query);
+         if (children.length) {
+           return { ...node, children };
+         }
+       }
+       return null;
+     })
+     .filter(Boolean);
+ };
+
+ return (
+   <div>
+     <h2>Tree Search App</h2>
+
+     <SearchBar
+       data={treeData}
+       onSearch={(q) =>
+         setFiltered(q ? filterTree(treeData, q) : treeData)
+       }
+     />
+
+     <TreeView data={filtered} />
+   </div>
+ );
+}
+
+export default App;
+```
+
+---
+
+# ✅ STEP 7 — Install Testing Library
+
+```bash
+npm install @testing-library/react @testing-library/jest-dom
+```
+
+---
+
+# ✅ STEP 8 — Test Case Example
+
+📄 `SearchBar.test.js`
+
+```javascript
+import { render, screen, fireEvent } from "@testing-library/react";
+import SearchBar from "./SearchBar";
+
+test("shows suggestions", () => {
+
+ const data = [{ name: "Apple" }];
+
+ render(<SearchBar data={data} onSearch={() => {}} />);
+
+ const input = screen.getByPlaceholderText("Search...");
+ fireEvent.change(input, { target: { value: "App" } });
+
+ expect(screen.getByText("Apple")).toBeInTheDocument();
+});
+```
+
+Run test:
+
+```bash
+npm test
+```
+
+---
+
+# ✅ WHAT YOU BUILT (Industry Features)
+
+✔ Recursive Tree Rendering
+✔ Auto Suggest Search
+✔ Dynamic Filtering
+✔ Component Communication
+✔ Unit Testing
+
+---
+
+# 🚀 If You Want — I Can Upgrade This to REAL INDUSTRY LEVEL
+
+Since you’re preparing full stack + interviews 😄 I can give you:
+
+🔥 Tree Search with Expand/Collapse
+🔥 Highlight matched text
+🔥 Backend API search (Spring Boot)
+🔥 Lazy loading nodes
+🔥 10/10 Interview React Machine Coding Question Version
+
+Just say:
+
+👉 **"Give me industry level tree search implementation"** 🚀
